@@ -15,24 +15,21 @@ class PredictoTestCase(unittest.TestCase):
                 '/learn',
                 data=
                 json.dumps(dict(
-                    data=[
-                        {
+                    data={
                             "inpuxts": [1, 2, 3],
                             "output": 5
-                        }
-                    ]
+                    }
                 )),
                 content_type='application/json')
         self.assertTrue(isinstance(context.exception, ValidationError))
 
     def test_succeeds_on_correct_data(self):
         resp = self.app.post('/learn', data=json.dumps(dict(
-            data=[
-                {
-                    "inputs": [1, 2, 3],
-                    "output": 5
+            data={
+                    "inputs": [[1, 2], [3, 4]],
+                    "outputs": [5, 1]
                 }
-            ]
+
         )),
                              content_type='application/json')
         assert resp.status_code == 200
