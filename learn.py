@@ -1,4 +1,5 @@
 from jsonschema import validate
+from sklearn.ensemble import RandomForestClassifier
 
 learn_schema = {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -38,6 +39,8 @@ learn_schema = {
 class Learn:
     @staticmethod
     def create_predictor(params):
-        print(params)
         validate(params, learn_schema)
+        data = params["data"]
+        clf = RandomForestClassifier(n_estimators=10)
+        fitted = clf.fit(data["inputs"], data["outputs"])
         return None
