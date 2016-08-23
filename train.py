@@ -43,4 +43,4 @@ class Train:
         data = params["data"]
         clf = RandomForestClassifier(n_estimators=10)
         fitted = clf.fit(data["inputs"], data["outputs"])
-        return None
+        return fitted

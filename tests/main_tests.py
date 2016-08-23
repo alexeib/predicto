@@ -14,7 +14,7 @@ class PredictoTestCase(unittest.TestCase):
     def test_fails_on_wrong_data(self):
         with self.assertRaises(Exception) as context:
             self.app.post(
-                '/learn',
+                '/train',
                 data=
                 json.dumps(dict(
                     data={
@@ -25,17 +25,19 @@ class PredictoTestCase(unittest.TestCase):
                 content_type='application/json')
         self.assertTrue(isinstance(context.exception, ValidationError))
 
-    @patch('learn.RandomForestClassifier')
+    @patch('train.RandomForestClassifier')
     def test_succeeds_on_correct_data(self, rfc):
-        resp = self.app.post('/train', data=json.dumps(dict(
-            data={
-                    "inputs": [[1, 2], [3, 4]],
-                    "outputs": [5, 1]
-                }
+        with patch.object(main.pickle, 'dumps', return_value = 'serialized') as serialize_method:
+            resp = self.app.post('/train', data=json.dumps(dict(
+                data={
+                        "inputs": [[1, 2], [3, 4]],
+                        "outputs": [5, 1]
+                    }
 
-        )),
-                             content_type='application/json')
+            )), content_type='application/json')
         assert resp.status_code == 200
+        assert resp.get_data() == b'serialized'
+        serialize_method.assert_called_once()
 
 
 if __name__ == '__main__':
