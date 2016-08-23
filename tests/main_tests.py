@@ -26,7 +26,7 @@ class PredictoTestCase(unittest.TestCase):
         self.assertTrue(isinstance(context.exception, ValidationError))
 
     def test_succeeds_on_correct_data(self):
-        resp = self.app.post('/learn', data=json.dumps(dict(
+        resp = self.app.post('/train', data=json.dumps(dict(
             data=[
                 {
                     "inputs": [1, 2, 3],

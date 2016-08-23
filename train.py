@@ -1,6 +1,6 @@
 from jsonschema import validate
 
-learn_schema = {
+train_schema = {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Learning model creation schema",
     "type": "object",
@@ -30,9 +30,8 @@ learn_schema = {
 }
 
 
-class Learn:
+class Train:
     @staticmethod
     def create_predictor(params):
-        print(params)
-        validate(params, learn_schema)
+        validate(params, train_schema)
         return None
