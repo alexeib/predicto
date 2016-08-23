@@ -1,4 +1,5 @@
 from jsonschema import validate
+from sklearn.ensemble import RandomForestClassifier
 
 train_schema = {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -6,24 +7,29 @@ train_schema = {
     "type": "object",
     "properties": {
         "data": {
-            "title": "Observations",
-            "type": "array",
-            "items": {
-                "title": "Observation",
-                "type": "object",
-                "properties": {
-                    "inputs": {
+            "type": "object",
+            "title": "Training data",
+            "properties": {
+                "inputs": {
+                    "title": "Array of inputs",
+                    "type": "array",
+                    "items": {
+                        "title": "Array of data for a single input",
                         "type": "array",
                         "items": {
-                            "type": "number"
+                            "type": "number",
                         }
-                    },
-                    "output": {
-                        "type": "number"
                     }
                 },
-                "required": ["inputs", "output"]
-            }
+                "outputs": {
+                    "title": "Array of outputs",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "required": ["inputs", "outputs"]
         }
     },
     "required": ["data"]
@@ -34,4 +40,7 @@ class Train:
     @staticmethod
     def create_predictor(params):
         validate(params, train_schema)
+        data = params["data"]
+        clf = RandomForestClassifier(n_estimators=10)
+        fitted = clf.fit(data["inputs"], data["outputs"])
         return None
