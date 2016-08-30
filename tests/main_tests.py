@@ -8,7 +8,6 @@ from jsonschema import ValidationError
 class PredictoTestCase(unittest.TestCase):
     def setUp(self):
         main.app.config['TESTING'] = True
-
         self.app = main.app.test_client(False)
 
     def test_fails_on_wrong_data(self):
@@ -27,7 +26,7 @@ class PredictoTestCase(unittest.TestCase):
 
     @patch('train.RandomForestClassifier')
     def test_succeeds_on_correct_data(self, rfc):
-        with patch.object(main.pickle, 'dumps', return_value = 'serialized') as serialize_method:
+        with patch.object(main.FilePersistence, 'save', return_value = 'serialized') as serialize_method:
             resp = self.app.post('/train', data=json.dumps(dict(
                 data={
                         "inputs": [[1, 2], [3, 4]],
@@ -37,7 +36,8 @@ class PredictoTestCase(unittest.TestCase):
             )), content_type='application/json')
         assert resp.status_code == 200
         assert resp.get_data() == b'serialized'
-        serialize_method.assert_called_once()
+        assert serialize_method.called
+        assert rfc.called
 
 
 if __name__ == '__main__':
