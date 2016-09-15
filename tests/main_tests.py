@@ -27,7 +27,7 @@ class PredictoTestCase(unittest.TestCase):
     @patch('train.RandomForestClassifier')
     def test_succeeds_on_correct_data(self, rfc):
         with patch.object(main.FilePersistence, 'save', return_value = 'serialized') as serialize_method:
-            resp = self.app.post('/train', data=json.dumps(dict(
+            resp = self.app.post('/traigit pulln', data=json.dumps(dict(
                 data={
                         "inputs": [[1, 2], [3, 4]],
                         "outputs": [5, 1]
