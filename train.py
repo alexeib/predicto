@@ -1,46 +1,9 @@
-from jsonschema import validate
 from sklearn.ensemble import RandomForestClassifier
-
-train_schema = {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Learning model creation schema",
-    "type": "object",
-    "properties": {
-        "data": {
-            "type": "object",
-            "title": "Training data",
-            "properties": {
-                "inputs": {
-                    "title": "Array of inputs",
-                    "type": "array",
-                    "items": {
-                        "title": "Array of data for a single input",
-                        "type": "array",
-                        "items": {
-                            "type": "number",
-                        }
-                    }
-                },
-                "outputs": {
-                    "title": "Array of outputs",
-                    "type": "array",
-                    "items": {
-                        "type": "number"
-                    }
-                }
-            },
-            "required": ["inputs", "outputs"]
-        }
-    },
-    "required": ["data"]
-}
 
 
 class Trainer:
     @staticmethod
-    def create_predictor(params):
-        validate(params, train_schema)
-        data = params["data"]
+    def create_predictor(inputs, outputs):
         clf = RandomForestClassifier(n_estimators=10)
-        fitted = clf.fit(data["inputs"], data["outputs"])
+        fitted = clf.fit(inputs, outputs)
         return fitted
