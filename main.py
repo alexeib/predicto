@@ -61,7 +61,7 @@ def make_app(persistor, trainer):
         if model is None:
             abort(404)
         probs = model.predict_proba(params)
-        return jsonify(probs.tolist())
+        return jsonify(probabilities=probs.tolist())
 
     @app.route('/model/<string:model_id>', methods=['DELETE'])
     def delete(model_id):

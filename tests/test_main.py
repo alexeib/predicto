@@ -70,7 +70,7 @@ def test_predict_correctly_predicts(app):
     model_name = resp.get_data()
     predict_resp = predict(app, model_name, [[1, 1, 0], [0, 0, 1]])
     assert resp.status_code == 200
-    predictions = json.loads(predict_resp.get_data())
+    predictions = json.loads(predict_resp.get_data())["probabilities"]
     assert len(predictions) == 2
     assert len(predictions[0]) == 2
     assert len(predictions[1]) == 2
