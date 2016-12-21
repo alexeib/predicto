@@ -27,7 +27,8 @@ def make_app(persistor, trainer):
 
     @app.route('/model/<string:model_id>', methods=['DELETE'])
     def delete(model_id):
-        persistor().delete(model_id)
+        persistor.delete(model_id)
+        return '', 204
 
     return app
 

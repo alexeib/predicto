@@ -37,6 +37,9 @@ def predict(app, model_name, inputs):
                     data=json.dumps(inputs),
                     content_type='application/json')
 
+def delete(app, model_name):
+    return app.delete('/model/{}'.format(model_name.decode('utf-8')))
+
 def test_train_fails_on_wrong_data(app):
     with pytest.raises(ValidationError):
         app.post(
@@ -73,3 +76,11 @@ def test_predict_correctly_predicts(app):
     assert len(predictions[1]) == 2
     assert predictions[0][0] > predictions[0][1]
     assert predictions[1][0] < predictions[1][1]
+
+def test_deletes_model(mocker, app, persistence):
+    delete_method = mocker.patch.object(persistence, 'delete')
+    train_resp = train(app, [[1], [0]], [0, 1])
+    assert train_resp.status_code == 200
+    delete_resp = delete(app, train_resp.get_data())
+    assert delete_resp.status_code == 204
+    assert delete_method.called
