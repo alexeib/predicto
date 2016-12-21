@@ -36,7 +36,7 @@ train_schema = {
 }
 
 
-class Train:
+class Trainer:
     @staticmethod
     def create_predictor(params):
         validate(params, train_schema)

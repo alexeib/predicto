@@ -1,7 +1,6 @@
 from sklearn.externals import joblib
 from uuid import uuid4
 import os
-import glob
 
 
 class FilePersistence:
@@ -23,6 +22,23 @@ class FilePersistence:
         return joblib.load(filename)
 
     def delete(self, name):
+        if not name or (isinstance(name, str) and name.isspace()):
+                raise ValueError('name must not be an empty')
         filename = self.make_path(name)
-        for f in glob.glob(filename + '*'):
-            os.remove(f)
+        os.remove(filename)
+
+
+class MemoryPersistence:
+    def __init__(self):
+        self.models = {}
+
+    def save(self, model):
+        name = str(uuid4())
+        self.models[name] = model
+        return name
+
+    def load(self, name):
+        return self.models[name]
+
+    def delete(self, name):
+        del self.models[name]
