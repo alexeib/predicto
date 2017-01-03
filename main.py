@@ -1,9 +1,13 @@
+import gevent.monkey; gevent.monkey.patch_all()
+
 from flask import Flask, request, abort, jsonify
 from train import Trainer
 from model_persistence import FilePersistence
 from jsonschema import validate
 import os
 
+import requests
+from gevent.pywsgi import WSGIServer
 
 train_schema = {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -75,4 +79,7 @@ if __name__ == "__main__":
     if not os.path.exists(model_dir):
         os.makedirs(model_dir)
     app = make_app(FilePersistence(model_dir), Trainer())
-    app.run()
+    http_server = WSGIServer(('', 5000), app)
+    http_server.max_accept = 1000000
+    http_server.serve_forever()
+    #app.run(threaded=True)

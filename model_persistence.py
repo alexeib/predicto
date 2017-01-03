@@ -1,6 +1,7 @@
 from sklearn.externals import joblib
 from uuid import uuid4
 import os
+import functools
 
 
 class FilePersistence:
@@ -17,6 +18,7 @@ class FilePersistence:
         joblib.dump(model, filename)
         return name
 
+    @functools.lru_cache()
     def load(self, name):
         filename = self.make_path(name)
         return joblib.load(filename)
