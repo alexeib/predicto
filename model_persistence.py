@@ -1,7 +1,6 @@
 from sklearn.externals import joblib
 from uuid import uuid4
-import os
-import functools
+import os, glob, functools
 
 
 class FilePersistence:
@@ -15,7 +14,7 @@ class FilePersistence:
     def save(self, model):
         name = str(uuid4())
         filename = self.make_path(name)
-        joblib.dump(model, filename)
+        joblib.dump(model, filename, compress=True)
         return name
 
     @functools.lru_cache()
@@ -25,9 +24,10 @@ class FilePersistence:
 
     def delete(self, name):
         if not name or (isinstance(name, str) and name.isspace()):
-                raise ValueError('name must not be an empty')
+                raise ValueError('name must not be empty')
         filename = self.make_path(name)
-        os.remove(filename)
+        for filename in glob.glob(filename + "*"):
+            os.remove(filename)
 
 
 class MemoryPersistence:
